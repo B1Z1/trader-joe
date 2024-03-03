@@ -1,0 +1,61 @@
+{
+  "name": "trader-joe-backend",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "apps/trader-joe-backend/src",
+  "projectType": "application",
+  "targets": {
+    "build": {
+      "executor": "@nx/esbuild:esbuild",
+      "outputs": ["{options.outputPath}"],
+      "defaultConfiguration": "production",
+      "options": {
+        "platform": "node",
+        "outputPath": "dist/apps/trader-joe-backend",
+        "format": ["cjs"],
+        "bundle": false,
+        "main": "apps/trader-joe-backend/src/main.ts",
+        "tsConfig": "apps/trader-joe-backend/tsconfig.app.json",
+        "assets": ["apps/trader-joe-backend/src/assets"],
+        "generatePackageJson": true,
+        "esbuildOptions": {
+          "sourcemap": true,
+          "outExtension": {
+            ".js": ".js"
+          }
+        }
+      },
+      "configurations": {
+        "development": {},
+        "production": {
+          "generateLockfile": true,
+          "esbuildOptions": {
+            "sourcemap": false,
+            "outExtension": {
+              ".js": ".js"
+            }
+          }
+        }
+      }
+    },
+    "serve": {
+      "executor": "@nx/js:node",
+      "defaultConfiguration": "development",
+      "options": {
+        "buildTarget": "trader-joe-backend:build"
+      },
+      "configurations": {
+        "development": {
+          "buildTarget": "trader-joe-backend:build:development"
+        },
+        "production": {
+          "buildTarget": "trader-joe-backend:build:production"
+        }
+      }
+    },
+    "docker-build": {
+      "dependsOn": ["build"],
+      "command": "docker build -f apps/trader-joe-backend/Dockerfile . -t trader-joe-backend"
+    }
+  },
+  "tags": []
+}
